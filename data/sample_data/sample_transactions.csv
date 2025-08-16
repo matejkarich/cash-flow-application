@@ -1,0 +1,37 @@
+Date,Description,Amount,Category,Subcategory,Payment Method
+2024-01-01,Salary Deposit,3500.00,Income,Job,Direct Deposit
+2024-01-02,Grocery Store,-125.45,Food,Groceries,Chase Sapphire
+2024-01-03,Netflix Subscription,-15.99,Entertainment,Streaming,Amex Gold
+2024-01-04,Gas Station,-67.89,Transportation,Gas,Chase Sapphire
+2024-01-05,Restaurant Dinner,-89.32,Food,Dining Out,Amex Gold
+2024-01-06,Electric Bill,-145.67,Utilities,Electricity,Bank Transfer
+2024-01-07,Coffee Shop,-12.50,Food,Coffee,Debit Card
+2024-01-08,Amazon Purchase,-89.99,Shopping,Online,Chase Sapphire
+2024-01-09,Gym Membership,-49.99,Health,Fitness,Chase Sapphire
+2024-01-10,Freelance Payment,750.00,Income,Freelance,Direct Deposit
+2024-01-11,Target Shopping,-156.78,Shopping,General,Debit Card
+2024-01-12,Uber Ride,-23.45,Transportation,Rideshare,Amex Gold
+2024-01-13,Pharmacy,-34.56,Health,Medical,Debit Card
+2024-01-14,Movie Theater,-28.00,Entertainment,Movies,Cash
+2024-01-15,Grocery Store,-98.76,Food,Groceries,Chase Sapphire
+2024-01-16,Internet Bill,-79.99,Utilities,Internet,Bank Transfer
+2024-01-17,Coffee Shop,-8.75,Food,Coffee,Debit Card
+2024-01-18,Online Course,-199.00,Education,Online Learning,Amex Gold
+2024-01-19,Gas Station,-72.34,Transportation,Gas,Chase Sapphire
+2024-01-20,Restaurant Lunch,-45.67,Food,Dining Out,Amex Gold
+2024-01-21,Investment Dividend,125.00,Income,Investments,Direct Deposit
+2024-01-22,Costco Shopping,-234.56,Shopping,Warehouse,Amex Gold
+2024-01-23,Spotify Subscription,-9.99,Entertainment,Music,Chase Sapphire
+2024-01-24,Dentist Appointment,-150.00,Health,Dental,Insurance
+2024-01-25,Home Depot,-87.43,Home,Maintenance,Debit Card
+2024-01-26,Fast Food,-18.45,Food,Fast Food,Cash
+2024-01-27,Car Insurance,-167.89,Transportation,Insurance,Bank Transfer
+2024-01-28,BookStore,-34.99,Education,Books,Chase Sapphire
+2024-01-29,Clothing Store,-156.78,Shopping,Clothing,Amex Gold
+2024-01-30,Grocery Store,-109.87,Food,Groceries,Chase Sapphire
+2024-01-31,Phone Bill,-85.00,Utilities,Phone,Bank Transfer
+2024-02-01,Salary Deposit,3500.00,Income,Job,Direct Deposit
+2024-02-02,Grocery Store,-134.56,Food,Groceries,Chase Sapphire
+2024-02-03,Netflix Subscription,-15.99,Entertainment,Streaming,Amex Gold
+2024-02-04,Gas Station,-78.90,Transportation,Gas,Chase Sapphire
+2024-02-05,Restaurant Dinner,-95.43,Food,Dining Out,Amex Gold
