@@ -248,6 +248,23 @@ def init_database():
     db = SessionLocal()
     
     try:
+        # Check if data already exists
+        existing_user = db.query(User).filter(User.email == "demo@financeapp.com").first()
+        
+        if existing_user:
+            print("✅ Sample data already exists! Skipping initialization.")
+            print(f"   - User: {existing_user.name}")
+            
+            # Count existing data
+            categories_count = db.query(Category).filter(Category.user_id == existing_user.id).count()
+            cards_count = db.query(CreditCard).filter(CreditCard.user_id == existing_user.id).count()
+            transactions_count = db.query(Transaction).filter(Transaction.user_id == existing_user.id).count()
+            
+            print(f"   - {categories_count} categories")
+            print(f"   - {cards_count} credit cards")
+            print(f"   - {transactions_count} transactions")
+            return
+        
         # Create user
         user = create_sample_user()
         db.add(user)

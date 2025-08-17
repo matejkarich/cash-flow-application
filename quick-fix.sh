@@ -1,34 +1,45 @@
 #!/bin/bash
 
-echo "🚀 Simple Finance Analyzer Startup"
-
-# Kill any existing processes
-lsof -ti:8000 | xargs kill -9 2>/dev/null || true
-lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+echo "🔧 Quick Fix for Finance Analyzer Database Issue"
 
 # Navigate to project directory
 cd "$(dirname "$0")"
 
-echo "📁 Current directory: $(pwd)"
+# Kill any existing processes
+echo "🧹 Cleaning up existing processes..."
+lsof -ti:8000 | xargs kill -9 2>/dev/null || true
+lsof -ti:3000 | xargs kill -9 2>/dev/null || true
 
-# Set up backend
-echo "🐍 Setting up backend..."
+# Go to backend
 cd backend
 
-# Create virtual environment if it doesn't exist
+# Check if we have a virtual environment
 if [ ! -d "venv" ]; then
+    echo "📦 Creating virtual environment..."
     python3 -m venv venv
 fi
 
 # Activate virtual environment
 source venv/bin/activate
 
-# Install simple requirements
-echo "📦 Installing Python packages..."
+# Install dependencies
+echo "📦 Installing dependencies..."
 pip install --upgrade pip
-pip install -r requirements-simple.txt
 
-# Create simple .env file
+# Try simple requirements first
+if [ -f "requirements-simple.txt" ]; then
+    pip install -r requirements-simple.txt
+else
+    pip install -r requirements.txt
+fi
+
+# Remove the existing database file to start fresh
+if [ -f "finance.db" ]; then
+    echo "🗑️ Removing existing database..."
+    rm finance.db
+fi
+
+# Create .env file
 echo "📝 Creating .env file..."
 cat > .env << 'EOF'
 DATABASE_URL=sqlite:///./finance.db
@@ -36,12 +47,15 @@ DEBUG=true
 ALLOWED_ORIGINS=http://localhost:3000
 EOF
 
-# Initialize database
-echo "🗄️ Setting up database..."
-if python init_sample_data.py; then
-    echo "✅ Database setup completed"
+# Initialize database with fresh data
+echo "🗄️ Creating fresh database..."
+python init_sample_data.py
+
+if [ $? -eq 0 ]; then
+    echo "✅ Database created successfully"
 else
-    echo "⚠️ Database setup had issues, but continuing..."
+    echo "❌ Database creation failed"
+    exit 1
 fi
 
 # Start backend
@@ -52,22 +66,20 @@ BACKEND_PID=$!
 # Wait for backend to start
 sleep 5
 
-# Test backend
+# Check backend health
 if curl -s http://localhost:8000/health > /dev/null; then
     echo "✅ Backend is running at http://localhost:8000"
-    echo "📚 API docs at http://localhost:8000/docs"
 else
     echo "❌ Backend failed to start"
     kill $BACKEND_PID 2>/dev/null
     exit 1
 fi
 
-# Set up frontend
+# Setup frontend
 echo "⚛️ Setting up frontend..."
 cd ../frontend
 
-# Install packages
-echo "📦 Installing frontend packages..."
+# Install frontend dependencies
 npm install
 
 # Start frontend
@@ -76,19 +88,21 @@ BROWSER=none npm start &
 FRONTEND_PID=$!
 
 echo ""
-echo "🎉 Servers starting up!"
-echo "🌐 Frontend: http://localhost:3000 (may take a minute to start)"
+echo "🎉 Application is starting!"
+echo "🌐 Frontend: http://localhost:3000"
 echo "🔗 Backend: http://localhost:8000"
 echo "📚 API Docs: http://localhost:8000/docs"
 echo ""
-echo "Press Ctrl+C to stop"
+echo "Press Ctrl+C to stop all servers"
 
 # Cleanup function
 cleanup() {
+    echo ""
     echo "🛑 Stopping servers..."
     kill $BACKEND_PID $FRONTEND_PID 2>/dev/null
     lsof -ti:8000 | xargs kill -9 2>/dev/null || true
     lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+    echo "✅ Servers stopped"
     exit 0
 }
 
