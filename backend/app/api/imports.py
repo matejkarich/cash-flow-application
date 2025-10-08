@@ -4,7 +4,7 @@ from typing import List
 import json
 
 from ..core.database import get_db
-from ..services.google_sheets_service import GoogleSheetsService
+# from ..services.google_sheets_service import GoogleSheetsService  # Temporarily disabled
 from ..schemas.transaction import TransactionCreate, BulkTransactionImport
 
 router = APIRouter()
@@ -19,11 +19,14 @@ async def import_from_google_sheets(
 ):
     """Import transactions from a Google Sheets document"""
     try:
+        # Google Sheets service temporarily disabled
+        raise HTTPException(status_code=501, detail="Google Sheets import temporarily disabled. Please use CSV upload instead.")
+        
         # Initialize Google Sheets service
-        sheets_service = GoogleSheetsService()
+        # sheets_service = GoogleSheetsService()
         
         # Read data from the sheet
-        sheet_data = sheets_service.read_sheet_data(spreadsheet_id, range_name)
+        # sheet_data = sheets_service.read_sheet_data(spreadsheet_id, range_name)
         
         if not sheet_data:
             raise HTTPException(status_code=400, detail="No data found in the specified range")
@@ -73,11 +76,42 @@ async def import_from_csv(
         # Read file content
         file_content = await file.read()
         
-        # Initialize Google Sheets service (it handles CSV parsing too)
-        sheets_service = GoogleSheetsService()
+        # Temporarily use simple CSV parsing
+        import csv
+        import io
+        import chardet
+        from datetime import datetime
+        from decimal import Decimal
         
-        # Parse CSV data into transactions
-        transactions = sheets_service.import_from_csv_file(file_content, user_id)
+        # Detect encoding and parse CSV
+        encoding = chardet.detect(file_content)['encoding'] or 'utf-8'
+        csv_content = file_content.decode(encoding)
+        csv_reader = csv.DictReader(io.StringIO(csv_content))
+        
+        transactions = []
+        for i, row in enumerate(csv_reader):
+            try:
+                # Parse date
+                date_str = row.get('Date', row.get('date', ''))
+                date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+                
+                # Parse amount
+                amount_str = row.get('Amount', row.get('amount', '0'))
+                amount = Decimal(amount_str.replace('$', '').replace(',', ''))
+                
+                # Get description
+                description = row.get('Description', row.get('description', f'Transaction {i+1}'))
+                
+                # Simple transaction object (mock)
+                transactions.append({
+                    'date': date_obj.strftime('%Y-%m-%d'),
+                    'amount': float(amount),
+                    'description': description,
+                    'payment_method': row.get('Payment Method', row.get('payment_method', ''))
+                })
+            except Exception as e:
+                print(f"Error parsing row {i}: {e}")
+                continue
         
         if not transactions:
             raise HTTPException(status_code=400, detail="No valid transactions found in the CSV file")
@@ -86,15 +120,7 @@ async def import_from_csv(
             "message": f"Successfully parsed {len(transactions)} transactions from CSV",
             "transaction_count": len(transactions),
             "filename": file.filename,
-            "preview": [
-                {
-                    "date": t.date.strftime("%Y-%m-%d"),
-                    "amount": float(t.amount),
-                    "description": t.description,
-                    "payment_method": t.payment_method
-                }
-                for t in transactions[:5]  # Show first 5 transactions as preview
-            ]
+            "preview": transactions[:5]  # Show first 5 transactions as preview
         }
         
     except Exception as e:
